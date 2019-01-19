@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const url = require('url');
 const path = require('path');
 
@@ -28,6 +28,11 @@ app.on('ready', () => {
 
 });
 
+ipcMain.on('product:new', (e, newProduct) => {
+	mainWindow.webContents.send('product:new', newProduct);
+	newProductWindow.close();
+});
+
 const templateMenu = [
 	{
 		label: 'File',
@@ -42,7 +47,7 @@ const templateMenu = [
 			{
 				label: 'Remove All Products',
 				click() {
-					
+					mainWindow.webContents.send('products:remove-all');
 				}
 			},
 			{

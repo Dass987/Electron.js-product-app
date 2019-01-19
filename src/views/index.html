@@ -15,8 +15,9 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 			
 </head>
-<body>
+<body class="grey lighten-5">
 
+	<br/>
 	<div class="container">
 		<div id="products" class="row">
 			
@@ -27,7 +28,45 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 	<!-- Custom scripts -->
-	<script src="js/main.js"></script>
+	<script>
+		
+		const { ipcRenderer } = require('electron');
+		const products = document.querySelector('#products');
+
+		ipcRenderer.on('product:new', (e, newProduct) => {
+			
+			const newProductTemplate = `
+				<div class="col s12 m6">
+					<div class="card blue-grey darken-1 z-depth-3">
+						<div class="card-content grey lighten-4">
+							<span class="card-title">${newProduct.name}</span>
+							<p>${newProduct.description}</p>
+							<p>$${newProduct.price}</p>
+						</div>
+						<div class="card-action grey" style="padding:5px;">
+							<button class="btn-flat delete-product waves-effect waves-light white-text"><b>Delete</b><i class="material-icons right">delete</i></button>
+						</div>
+					</div>
+				</div>
+			`;
+
+			products.innerHTML += newProductTemplate;
+
+			const btns = document.querySelectorAll('.delete-product');
+
+			btns.forEach(btn => {
+				btn.addEventListener('click', e => {
+					e.target.parentElement.parentElement.parentElement.remove();
+				});
+			});
+
+		});
+
+		ipcRenderer.on('products:remove-all', (e) => {
+			products.innerHTML = "";
+		});
+
+	</script>
 
 </body>
 </html>

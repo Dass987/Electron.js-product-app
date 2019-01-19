@@ -47,7 +47,32 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 	<!-- Custom scripts -->
-	<script src="js/main.js"></script>
+	<script>
+
+		const { ipcRenderer }= require('electron');
+
+		const newProductForm = document.querySelector('#new-product-form');
+		
+
+		newProductForm.addEventListener('submit', e => {
+				
+			e.preventDefault();
+
+			const nameProduct = document.querySelector('#name').value;
+			const priceProduct = document.querySelector('#price').value;
+			const descriptionProduct = document.querySelector('#description').value;
+
+			const newProduct = {
+				name: nameProduct,
+				price: priceProduct,
+				description: descriptionProduct
+			};
+
+			ipcRenderer.send('product:new', newProduct);
+
+		});
+
+	</script>
 
 </body>
 
